@@ -1,0 +1,78 @@
+{% extends "base.njk" %}
+
+{% block titulo %}Habitaciones | Listado{% endblock %}
+
+{% block contenido %}
+
+    {% if habitacionesConImagen.length != 0 %}
+        <div id="carouselHabitaciones" class="carousel slide d-grid gap-2 col-8 mx-auto" data-bs-ride="carousel"> 
+            <div class="carousel-indicators">
+                {% for habitacion in habitacionesConImagen %}
+                    <button 
+                        type="button" 
+                        data-bs-target="#carouselHabitaciones" 
+                        data-bs-slide-to="{{ loop.index0 }}" 
+                        {% if loop.first %}
+                            class="active" 
+                            aria-current="true"
+                        {% endif %} 
+                        aria-label="Slide {{ loop.index }}"
+                    ></button>
+                {% endfor %}
+            </div>
+
+            <div class="carousel-inner">
+                {% for habitacion in habitacionesConImagen %}
+                    <div class="carousel-item {% if loop.first %}active{% endif %}">
+                        <img src="public/uploads/habitaciones/{{ habitacion.imagen }}" class="d-block w-100" alt="Imagen de la habitación">
+                        <div class="carousel-caption d-none d-md-block" style="background-color: rgba(62, 62, 62, 0.6);">
+                            <h5>
+                                <a href="/habitaciones/{{ habitacion.id }}" class="link-light link-underline link-underline-opacity-0 link-underline-opacity-75-hover">
+                                    Habitación {{ habitacion.numero }}
+                                </a>
+                            </h5>
+                            <p></p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselHabitaciones" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselHabitaciones" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    {% endif %}
+
+    <h1 style="margin: 1em 0;">Listado de habitaciones</h1>
+
+    <div class="container text-center">
+        <div class="row row-cols-4">
+            {% for habitacion in habitaciones %}
+                <div class="col" style="margin-bottom: 1.7em;">
+                    <div class="col card">
+                        <div class="card-body">
+                            <h5 class="card-title">Habitación {{ habitacion.numero }}</h5>
+                            <h6 class="card-subtitle mb-2 text-body-secondary">
+                                Última limpieza: {{ habitacion.ultimaLimpieza | date("DD/MM/YYYY") }}
+                            </h6>
+                            <a href="/habitaciones/{{ habitacion.id }}" class="btn btn-primary" style="margin-top: 10px;">
+                                Ver ficha <i class="fa fa-search" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    {% if habitaciones.length == 0 %}
+        <div class="alert alert-warning text-center" role="alert">
+            No hay habitaciones registradas.
+        </div>
+    {% endif %}
+
+{% endblock %}

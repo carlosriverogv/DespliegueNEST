@@ -1,0 +1,123 @@
+{% extends "base.njk" %}
+
+{% block titulo %}
+    {% if not edicion %}
+    Habitaciones | Nueva
+    {% else %}
+    Habitaciones | Editar
+    {% endif %}
+{% endblock %}
+
+{% block contenido %}
+
+    <h1>Nueva habitación</h1>
+
+    {% if errores.general %}
+        <p class="alert alert-danger">{{ errores.general }}</p>
+    {% endif %}
+
+    <form 
+        {% if not edicion %}
+        action="/habitaciones" 
+        {% else %}
+        action="/habitaciones/{{ datos.id }}" 
+        {% endif %}
+        method="post" 
+        enctype="multipart/form-data" 
+        class="row g-3"
+    >
+        <div class="form-floating col-md-4">
+            <input 
+                type="number" 
+                id="numero" 
+                name="numero" 
+                placeholder="Número de habitación..." 
+                step="1" 
+                value="{{ datos.numero }}"
+
+                {% if errores.numero %}
+                class="form-control is-invalid"
+                {% else %}
+                class="form-control"
+                {% endif %}
+            >
+            <label for="numero">Número de habitación</label>
+            {% if errores.numero %}
+                <p class="invalid-feedback">{{ errores.numero }}</p>
+            {% endif %}
+        </div>
+
+        <div class="form-floating col-md-4">
+            <select 
+                id="tipo" 
+                name="tipo" 
+                value="{{ datos.tipo }}"
+
+                {% if errores.tipo %}
+                class="form-select is-invalid"
+                {% else %}
+                class="form-select"
+                {% endif %}
+            >
+                <option value="" selected disabled>Selecciona un tipo</option>
+                <option value="individual" {% if datos.tipo == 'individual' %} selected {% endif %}>Individual</option>
+                <option value="doble" {% if datos.tipo == 'doble' %} selected {% endif %}>Doble</option>
+                <option value="familiar" {% if datos.tipo == 'familiar' %} selected {% endif %}>Familiar</option>
+                <option value="suite" {% if datos.tipo == 'suite' %} selected {% endif %}>Suite</option>
+            </select>
+            <label for="tipo">Tipo</label>
+            {% if errores.tipo %}
+                <p class="invalid-feedback">{{ errores.tipo }}</p>
+            {% endif %}
+        </div>
+
+        <div class="form-floating col-md-4">
+            <input 
+                type="number" 
+                id="precio" 
+                name="precio" 
+                step="0.01" 
+                placeholder="Precio"
+                value="{{ datos.precio }}"
+
+                {% if errores.precio %}
+                class="form-control is-invalid"
+                {% else %}
+                class="form-control"
+                {% endif %}
+            >
+            <label for="precio">Precio</label>
+            {% if errores.precio %}
+                <p class="invalid-feedback">{{ errores.precio }}</p>
+            {% endif %}
+        </div>
+        
+        <div class="form-floating">
+            <textarea 
+                id="descripcion" 
+                name="descripcion" 
+                placeholder="Descripcion" 
+                style="height: 100px"
+
+                {% if errores.descripcion %}
+                class="form-control is-invalid"
+                {% else %}
+                class="form-control"
+                {% endif %}
+            >{{ datos.descripcion }}</textarea>
+            <label for="descripcion">Descripción</label>
+            {% if errores.descripcion %}
+                <p class="invalid-feedback">{{ errores.descripcion }}</p>
+            {% endif %}
+        </div>
+        <div>
+            <label for="imagen">Imagen</label>
+            <input type="file" id="imagen" name="imagen" class="form-control">
+        </div>
+
+        <div class="d-grid gap-2 col-2 mx-auto">
+            <button type="submit" class="btn btn-primary">Enviar</button>
+        </div>
+    </form>
+
+{% endblock %}

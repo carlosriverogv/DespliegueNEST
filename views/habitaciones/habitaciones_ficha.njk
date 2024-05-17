@@ -1,0 +1,131 @@
+{% extends "base.njk" %}
+
+{% block titulo %}Habitaciones | Ficha{% endblock %}
+
+{% block contenido %}
+
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/habitaciones">Inicio</a></li>
+            <li class="breadcrumb-item active aria-current="page"">
+                Habitación {{ habitacion.numero }}
+            </li>
+        </ol>
+    </nav>
+
+    <h1>Ficha de la habitación {{ habitacion.numero }}
+        <a href="/limpiezas/{{ habitacion.id }}" class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Ver limpiezas">
+            <i class="fa fa-shower" aria-hidden="true"></i>
+        </a>
+        {% if session and session.usuario %}
+        <a href="/habitaciones/editar/{{ habitacion.id }}" class="btn btn-warning" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Editar habitación">
+            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+        </a>
+        <form action="/habitaciones/{{ habitacion.id }}" method="post" style="display: inline;">
+            <input type="hidden" name="_method" value="delete">
+            <button type="submit" class="btn btn-danger" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Borrar habitación">
+                <i class="fa fa-trash" aria-hidden="true"></i>
+            </button>
+        </form>
+        {% endif %}
+    </h1>
+
+    <div class="container" style="margin-top: 0.75em;">
+        <div class="row">
+            <div class="col">
+                {% if habitacion.imagen %}
+                    <img src="/public/uploads/habitaciones/{{ habitacion.imagen }}" class="img-thumbnail">
+                {% else %}
+                    <img src="/public/res/not-available.png" class="img-thumbnail">
+                {% endif %}
+            </div>
+            <div class="col">
+                <p>Tipo {{ habitacion.tipo }} - <strong>{{ habitacion.precio }}€/noche</strong></p>
+                <p>{{ habitacion.descripcion }}</p>
+            </div>
+        </div>
+    </div>
+
+    <h2 position-relative style="margin-top: 1em;">Listado de incidencias 
+        {% if session and session.usuario %}
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#incidenciaNuevaModal">
+            <i class="fa fa-plus" aria-hidden="true"></i>
+        </button>
+        {% endif %}
+    </h2>
+
+    <div class="accordion" id="accordionIncidencias">
+        {% for incidencia in habitacion.incidencias %}
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="true" aria-controls="collapse{{ loop.index }}">
+                        Incidencia del {{ incidencia.inicio | date("DD/MM/YYYY") }}
+                    </button>
+                </h2>
+                <div id="collapse{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#accordionIncidencias">
+                    <div class="accordion-body container">
+                        <div class="row">
+                            
+                            {% if incidencia.imagen %}
+                            <div class="col">
+                                <p><img src="/public/uploads/incidencias/{{ incidencia.imagen }}" class="rounded mx-auto d-block"></p>
+                            </div>
+                            {% endif %}
+
+                            <div class="col">
+                                {{ incidencia.descripcion }}
+
+                                {% if incidencia.descripcion|length == 0 %}
+                                    Sin detalles
+                                {% endif %}
+
+                                <br>
+                                {% if incidencia.fin %}
+                                    <span class="badge text-bg-success">Cerrada el {{ incidencia.fin | date("DD/MM/YYYY") }}</span>
+                                {% elif session and session.usuario %}
+                                    <form action="/habitaciones/{{ habitacion.id }}/incidencias/{{ incidencia.id }}" method="post">
+                                        <input type="hidden" name="_method" value="put">
+                                        <div class="d-grid gap-2 col-3 mx-auto">
+                                            <button type="submit" class="btn btn-danger" style="margin-top: 2em;">
+                                                Cerrar
+                                            </button>
+                                        </div>
+                                    </form>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
+        {% if habitacion.incidencias|length == 0 %}
+            Sin incidencias
+        {% endif %}
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="incidenciaNuevaModal" tabindex="-1" aria-labelledby="incidenciaModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <form action="/habitaciones/{{ habitacion.id }}/incidencias" method="post" enctype="multipart/form-data" class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="incidenciaModal">Añadir nueva incidencia</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="descripcion" class="form-label">Descripción</label>
+                        <textarea class="form-control" id="descripcion" name="descripcion" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="imagen" class="form-label">Imagen</label>
+                        <input type="file" id="imagen" name="imagen" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Añadir incidencia</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

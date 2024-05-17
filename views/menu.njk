@@ -1,0 +1,30 @@
+<nav class="navbar navbar-expand-lg bg-dark" style="margin-bottom: 2em;" data-bs-theme="dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/habitaciones">
+      Gestión de hoteles
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="/habitaciones">Habitaciones</a>
+        </li>
+        {% if session and session.usuario %}
+        <li>
+          <a class="nav-link active" aria-current="page" href="/habitaciones/nueva">Nueva habitación</a>
+        </li>
+        {% endif %}
+
+        <li class="d-flex">
+        {% if session and session.usuario %}
+          <a class="nav-link active" aria-current="page" href="/auth/logout">Logout</a>
+        {% else %}
+          <a class="nav-link active" aria-current="page" href="/auth/login">Login</a>
+        {% endif %}
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

@@ -1,0 +1,40 @@
+{% extends "base.njk" %}
+
+{% block titulo %}Limpiezas | Nueva{% endblock %}
+
+{% block contenido %}
+
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/habitaciones">Inicio</a></li>
+            <li class="breadcrumb-item">
+                <a href="/habitaciones/{{ habitacion.id }}">Habitación {{ habitacion.numero }}</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="/limpiezas/{{ habitacion.id }}">
+                    Limpiezas
+                </a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">Nueva</li>
+        </ol>
+    </nav>
+
+    <h1>Nueva limpieza de la habitación {{ habitacion.numero }}</h1> 
+
+    <form action="/limpiezas/{{ habitacion.id }}" method="post" class="row g-3">
+        <div class="form-floating">
+            <input type="date" id="fecha" name="fecha" value="{{ fechaActual }}" class="form-control" placeholder="">
+            <label for="fecha">Fecha de la limpieza</label>
+        </div>
+        
+        <div class="form-floating">
+            <textarea id="observaciones" name="observaciones" class="form-control" style="height: 100px" placeholder="Observaciones"></textarea>
+            <label for="observaciones">Observaciones</label>
+        </div>
+
+        <div class="d-grid gap-2 col-2 mx-auto">
+            <button type="submit" class="btn btn-primary">Enviar</button>
+        </div>
+    </form>
+
+{% endblock %}
